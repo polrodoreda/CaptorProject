@@ -21,23 +21,25 @@ def read_data(filename, t):
 
 def plot(data, t):
     if t == 'D':
-        plt.plot(data, 'b', linewidth = 2)
+        plt.plot(data, 'b', linewidth = 2, label = u'Direction')
         plt.title(u'Wind Direction')
         plt.ylabel(u'Degrees [º]')
+        plt.legend(loc = 0)
     elif t == 'V':
-        plt.plot(data, 'r', linewidth = 2)
+        plt.plot(data, 'r', linewidth = 2, label = u'Velocity')
         plt.title(u'Wind Speed')
         plt.ylabel(u'Speed [km/h]')
+        plt.legend(loc = 0)
     else:
         fig, ax1 = plt.subplots()
-        ax1.plot(data[0], 'b', linewidth = 2, label = u'Speed')
-        ax1.set_ylabel(u'Speed [km/h]')
+        ax1.plot(data[0], 'b', linewidth = 2, label = u'Direction')
+        ax1.set_ylabel(u'Degrees [º]')
         ax1.legend(loc = 2)
 
         ax2 = ax1.twinx()
-        ax2.plot(data[1], 'r', linewidth = 2, label = u'Direction')
-        ax2.set_ylabel(u'Speed [km/h]')
+        ax2.plot(data[1], 'r', linewidth = 2, label = u'Velocity')
         ax2.set_ylabel(u'Degrees [º]')
+        ax2.set_ylabel(u'Speed [km/h]')
         ax2.legend(loc = 0)
 
         plt.title(u'Wind Direction and Speed')
@@ -48,5 +50,6 @@ def plot(data, t):
 if __name__ == '__main__':
     filename = sys.argv[1]
     t = filename[4]
+    print t
     data = read_data(filename, t)
     plot(data, t)
