@@ -1,4 +1,4 @@
-# Project Captor
+# Captor Project
 
 ![Logo](logo.png)
 
@@ -9,3 +9,9 @@ Captor Project's objective is to establish low cost sensor network to control ai
 This GitHub repository saves the code to add an anemometer and a wind vane to the gadget.
 
 * [Captor Project](https://www.captor-project.eu/es/)
+
+Data acquisition is done through an Arduino YUN and then is graphical represented using Pyhton's Matplotlib library.
+
+One of the first results during indoor experiments can see below:
+
+![Experiment 1](Report/img/testFullInEN.png)
