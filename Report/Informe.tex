@@ -24,11 +24,10 @@
 	tabsize=2
 }
 
-%Per dibuixar grafics
-\usepackage{pgf}
-\usepackage{tikz}
-\usetikzlibrary{arrows, automata}
-\usetikzlibrary{positioning}
+\usepackage{etoolbox}
+\appto\appendix{\addtocontents{toc}{\protect\setcounter{tocdepth}{0}}}
+\appto\listoffigures{\addtocontents{lof}{\protect\setcounter{tocdepth}{1}}}
+\appto\listoftables{\addtocontents{lot}{\protect\setcounter{tocdepth}{1}}}
 
 \begin{document}
 \pagenumbering{gobble}
@@ -39,9 +38,11 @@
 	{\scshape\LARGE Facultat Informàtica de Barcelona \par}
 	\vspace{1cm}
 	{\scshape\Large Internet of Things\par}
-	\vspace{2cm}
-	{\huge\bfseries Informe Proyecto Captor\par}
 	\vspace{1cm}
+	\includegraphics[width=0.5\textwidth]{../logo.png}\par
+	\vspace{0.5cm}
+	{\huge\bfseries Informe\par}
+	\vspace{0.5cm}
 	{\Large\itshape Conexionado de anemómetro y veleta\par}
 	\vspace{2cm}
 	{\large \today\par}
@@ -59,7 +60,7 @@
 \section{Introducción}
 Actualmente, la contaminación del aire es controlada por redes de estaciones equipadas con instrumentos de referencia de alta calidad. como consecuencia del elevado coste, las estaciones cubren una densidad espacial relativamente baja, que se transforma en una reproducción poco precisa de la variabilidad de las concentraciones. Debido al avance en sensores móviles y aplicaciones de software, ha surgido un creciente  interés en redes de sensores basados en los ciudadanos.
 
-El \textbf{Proyecto Captor}\footnote{\url{https://www.captor-project.eu/es/}} es un proyecto desarrollado por el departamento de X de la Facultad de Informática de Barcelona (UPC) conjuntamente con el Y. El objetivo es establecer redes de sensores de bajo coste mantenidos por los ciudadanos para medir la contaminación de ozono en áreas dispersas.
+El \textbf{Proyecto Captor}\footnote{\url{https://www.captor-project.eu/es/}} es un proyecto desarrollado por la \texttt{Universitat Politècnica de Catalunya} juntamente con la \texttt{Université Blaise Pascal Clermont-Ferrand} y otras organizaciones. El objetivo es establecer redes de sensores de bajo coste mantenidos por los ciudadanos para medir la contaminación de ozono en áreas dispersas.
 
 Los datos del proyecto se recogerán entre el día 01/01/2015 y 31/12/2017 en 3 zonas europeas muy afectadas por la contaminación de ozono:
 
@@ -69,14 +70,31 @@ Los datos del proyecto se recogerán entre el día 01/01/2015 y 31/12/2017 en 3 
 	\item Burgenland, Steiermark and Niederösterreich (Austria)
 \end{itemize}
 
+El dispositivo encargado de capturar los datos se muestra en la figura \ref{fig:captor}. La finalidad de este trabajo es ampliar los captor para que puedan capturar información sobre el viento.
+
+\begin{figure}[h]
+\centering
+	\begin{minipage}{0.5\textwidth}
+	\centering
+	\includegraphics[width=0.75\textwidth]{img/Captor1.jpg}
+	\end{minipage}%
+	\begin{minipage}{0.5\textwidth}
+	\centering
+	\includegraphics[width=0.75\textwidth]{img/Captor2.jpg}
+	\end{minipage}
+\caption{Dispositivo captor}
+\label{fig:captor}
+\end{figure}
+\newpage
+
 \section{El viento}
 Porqué añadimos sensores para monitorizar el viento?
 Que datos extraemos?
 Que relación tienen los datos del viento con el ozono?
-
 \newpage
+
 \section{El dispositivo}
-Para obtener datos sobre la velocidad y dirección del viento se usa anemómetro y veleta de la marca Davis\footnote{\url{http://www.davisnet.com/product/anemometer-for-weather-monitor-or-wizard/}} \ref{fig:gadget}. El sensor de velocidad del viento usa un interruptor magnético que se activa por cada revolución de las aspas. La dirección del viento es mesurada a través de un potenciómetro.
+Para obtener datos sobre la velocidad y dirección del viento se usa anemómetro y veleta de la marca Davis\footnote{\url{http://www.davisnet.com/product/anemometer-for-weather-monitor-or-wizard/}} (figura \ref{fig:gadget}). El sensor de velocidad del viento usa un interruptor magnético que se activa por cada revolución de las aspas. La dirección del viento es mesurada a través de un potenciómetro.
 
 \begin{figure}[h]
 	\center
@@ -104,7 +122,7 @@ Resolución & 1km/h & 1º\\
 \label{tab:specifications}
 \end{table}
 
-Ambos sensores se conectan a través de un cable con conexión final RJ11 \ref{fig:rj11} con la que vamos a sacar los valores de nuestro interés a través de un breakout. 
+Ambos sensores se conectan a través de un cable con conexión final RJ11 (figura \ref{fig:rj11}) con la que vamos a sacar los valores de nuestro interés a través de un breakout. 
 
 \begin{figure}[h]
 	\center
@@ -112,9 +130,10 @@ Ambos sensores se conectan a través de un cable con conexión final RJ11 \ref{f
 	\caption{Esquema conexionado RJ11}
 	\label{fig:rj11}
 \end{figure}
+\newpage
 
 \subsection{Dirección del viento}
-Para obtener la dirección del viento es necesario conectar la salida del conector RJ11 con uno de los pines analógicos del Arduino. El sensor incorpora un potenciómetro de 20k$\Omega$ (figura \ref{fig:schema}) que conectaremos al conversor A/D del Arduino. El conversion tiene una resolución de 10bits, lo que nos da un rango de valores de 0 a 1023, que corresponde a su vez a un voltage de 0 a 5V. Mediante código debemos convertir el rango de valores del A/D al rango de 0 a 360º que ofrece el sensor para obtener la dirección del viento.
+Para obtener la dirección del viento es necesario conectar la salida del conector RJ11 con uno de los pines analógicos del Arduino. El sensor incorpora un potenciómetro de 20k$\Omega$ (figura \ref{fig:schema}) que conectaremos al conversor A/D del Arduino. El conversion tiene una resolución de 10bits, lo que nos da un rango de valores de 0 a 1023, que corresponde a su vez a un voltage de 0 a 5V. Mediante código (script \ref{app:script1}) debemos convertir el rango de valores del A/D al rango de 0 a 360º que ofrece el sensor para obtener la dirección del viento.
 
 \begin{figure}[h]
 	\center
@@ -123,7 +142,7 @@ Para obtener la dirección del viento es necesario conectar la salida del conect
 	\label{fig:schema}
 \end{figure}
 
-El potenciómetro tiene una "banda muerta" que dará como resultado 0º en el rango 1020 - 4 como se puede apreciar en la imagen \ref{fig:direction}. El sensor está calibrado de fábrica para entregar 0 cuando la dirección está alineada con el mástil que lo sostiene.
+El potenciómetro tiene una "banda muerta" que dará como resultado 0º en el rango 1020 - 4 como se puede apreciar en la figura \ref{fig:direction}. El sensor está calibrado de fábrica para entregar 0 cuando la dirección está alineada con el mástil que lo sostiene.
 
 \begin{figure}[h]
 	\center
@@ -133,7 +152,7 @@ El potenciómetro tiene una "banda muerta" que dará como resultado 0º en el ra
 \end{figure}
 
 \subsubsection{Resultados}
-Para observar los resultados se ha optado a primera instancia por representar los valores crudos obtenidos del sensor en la primera columna y los valors ya procesados por el conversor en la segunda columna. Los valores mostrados en la imagen \ref{fig:testdirection1} se han obtenido girando la veleta de forma manual.
+Para observar los resultados se ha optado en primera instancia por enviar los valores crudos obtenidos del sensor en una primera columna y los valores ya procesados por el conversor en una segunda columna a través del puerto analógico. Un script de Python (\ref{app:script4}) captura los valores del puerto serie y los almacena en un archivo de texto; posteriormente, un segundo script de Pyhton (\ref{app:script5}) los representa gráficamente. Los valores mostrados en la figura \ref{fig:testdirection1} se han obtenido girando la veleta de forma manual.
 
 \begin{figure}[h]
 	\center
@@ -153,6 +172,7 @@ La forma ideal de montage y funcionamiento del sensor es alinear la punta de la 
 \end{figure}
 
 Para determinar el valor de \textit{offset} que debemos aplicar, necesitamos apuntar la veleta hacía el norte magnético. Con la ayuda de una brújula vamos a determinar los grados de desviación, para luego restarlo al valor calculado.
+\newpage
 
 \subsection{Velocidad del viento}
 Para obtener la dirección del viento es necesario conectar la salida negra del conector RJ11 con uno de los pines digitales del Arduino a través de un pull-up de 4k7$Omega$ que pondrá a 5V el pin del Arduino. 
@@ -186,7 +206,7 @@ A causa de activaciones naturales incontroladas del interruptor, se ha decidido 
 Se usa un \textit{delay} de 3 segundos para obtener una media de la dirección del tiempo; este valor es T en la fórmula de cálculo. 
 
 \subsubsection{Resultados}
-A diferencia de la primera parte, ahora no obtenemos unos datos en crudo, sino que se calcula según el número de rotaciones por período. Para observar los resultados se ha optado por guardar en una primera columna el número de rotaciones por período y en una segunda columna el valor de la velocidad. La imagen \ref{fig:testvelocity1} representa la primera prueba, en la que se ha soplado el anemómetro en un espacio cerrado.
+A diferencia de la primera parte, ahora no obtenemos unos datos en crudo, sino que se calcula según el número de rotaciones por período. Para observar los resultados se ha optado por guardar en una primera columna el número de rotaciones por período y en una segunda columna el valor de la velocidad. La figura \ref{fig:testvelocity1} representa la primera prueba, en la que se ha soplado el anemómetro en un espacio cerrado.
 
 \begin{figure}[h]
 	\center
@@ -194,43 +214,89 @@ A diferencia de la primera parte, ahora no obtenemos unos datos en crudo, sino q
 	\caption{Resultado de la primera prueba en interior}
 	\label{fig:testvelocity1}
 \end{figure}
+\newpage
 
 \section{Resultados finales}
-Una vez comprobado el buen funcionamiento de los sensores de forma separada, es vital juntarlo en un mismo código para obtener los resultados a la vez. Para tal, se han unido los \textit{scripts} de las dos partes préviamente descritas en uno solo. Vamos a evitar los \textit{delays} porque bloquean la ejecición del código.
+Una vez comprobado el buen funcionamiento de los sensores de forma separada, es vital crear un script que capture los datos de los dos sensores para obtener los resultados a la vez (script \ref{app:script3}). 
 
+El resultado se ha representado de forma gráfica  (figura \ref{fig:testfull}) mediante el script de Python previamente citado con la peculiaridad que se representa cada sensor en un eje Y distinto, pero compartiendo el mismo eje X; de esta forma es más visual la evolución de los datos.
+
+\begin{figure}[h]
+	\center
+	\includegraphics[width=1\textwidth]{img/testFullIn.png}
+	\caption{Resultado conjunto en interior}
+	\label{fig:testfull}
+\end{figure}
 \newpage
-\section{Anexos}
+
+\begin{thebibliography}{9}
+\addcontentsline{toc}{section}{References}
+\bibitem{Arduino website}
+Arduino: Python interfacing,
+\\\url{https://playground.arduino.cc/Interfacing/Python}
+
+\bibitem{Cactus website}
+Cactus io,
+\\\url{http://cactus.io/hookups/weather/anemometer/davis/hookup-arduino-to-davis-anemometer}
+
+\bibitem{Davis website}
+Davis Instruments,
+\\\url{http://www.davisnet.com}
+
+\bibitem{Python matplotlib}
+Python: Matplotlib,
+\\\url{https://matplotlib.org}
+\end{thebibliography}
+\newpage
+
+\section*{Anexos}
+\addcontentsline{toc}{section}{Anexos}
 \appendix
 \renewcommand{\thesection}{\Alph{section}}
 \section{Script windDirection.ino}
-\begin{lstlisting}[language = C++]
+\label{app:script1}
+\begin{lstlisting}[basicstyle=\small, language = C++]
 int VaneValue;
 int Direction;
+int CalDirection;
 
 #define Offset 0;
 
 void setup() {
   Serial.begin(9600);
+  Serial.println("Wind Direction");
   Serial.println("Vane Value \t Direction");
 }
 
 void loop() {
   VaneValue = analogRead(A4);
   Direction = map(VaneValue, 0, 1023, 0, 360);
+  CalDirection = Direction + Offset;
+
+  if (CalDirection > 360) 
+    CalDirection = CalDirection - 360; 
+
+  if (CalDirection < 0) 
+    CalDirection = CalDirection + 360; 
 
   Serial.print(VaneValue);
   Serial.print("\t");
-  Serial.println(Direction);
+  Serial.println(CalDirection);
+  
+  delay(500);
 }
 \end{lstlisting}
 \newpage
 
 \section{Script windVelocity.ino}
-\begin{lstlisting}[language = C++]
+\label{app:script2}
+\begin{lstlisting}[basicstyle=\small, language = C++]
 #include <math.h>
 
 volatile unsigned long Rotations;
 volatile unsigned long ContactBounceTime;
+
+float WindSpeed;
 
 void setup() {
   Serial.begin(9600);
@@ -238,22 +304,22 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(2), isr_rotation, FALLING);
 
   Serial.println("Wind Velocity");
-  Serial.println("Rotacions \t MPH");
+  Serial.println("Rotacions \t km/h");
 }
 
 void loop() {
   Rotations = 0;
 
   sei();
-  delay(3000);
+  delay(1000);
   cli();
 
-  WindSpeed = Rotations * 0.75;
-  Serial.print("Rotations");
+  WindSpeed = (3.621024/1) * Rotations;
+  Serial.print(Rotations);
   Serial.print("\t");
-  Serial.println("WindSpeed");
+  Serial.println(WindSpeed);
 }
-  
+
 void isr_rotation() {
   if ((millis() - ContactBounceTime) > 15) {
     Rotations++;
@@ -264,54 +330,52 @@ void isr_rotation() {
 \newpage
 
 \section{Script windFull.ino}
-\begin{lstlisting}[language = C++]
-#include "TimerOne.h"
+\label{app:script3}
+\begin{lstlisting}[basicstyle=\small, language = C++]
 #include <math.h>
 
-#define WindVelocityPin 2;
-#define WindDirectionPin A4;
-#define Offset 0;
-
-int VaneValue;
-int Direction;
-int CalDirection;
-int LastValue;
-
-volatile bool IsSampleRequired;
-volatile unsigned int TimerCount;
 volatile unsigned long Rotations;
 volatile unsigned long ContactBounceTime;
 
 float WindSpeed;
+int VaneValue;
+int Direction;
+int CalDirection;
+
+#define Offset 0;
 
 void setup() {
-  LastValue = 0;
-  IsSampleRequired = false;
-  TimerCount = 0;
-  Rotations = 0;
-
   Serial.begin(9600);
-  pinMode(WindVelocityPin, INPUT);
-  attachInterrupt(digitalPinToInterrupt(WindVelocityPin), isr_rotation, FALLING);
+  pinMode(2, INPUT);
+  attachInterrupt(digitalPinToInterrupt(2), isr_rotation, FALLING);
 
-  Serial.println("Proyecto captor");
-  Serial.println("Velocity\tDirection");
-
-  Timer1.initialize(500000);
-  Timer1.attachInterrupt(isr_timer);
+  Serial.flush();
 }
 
 void loop() {
-  getWindDirection();
+  //Direction
+  VaneValue = analogRead(A4);
+  Direction = map(VaneValue, 0, 1023, 0, 360);
+  CalDirection = Direction + Offset;
 
-  if (abs(CalDirection - LastValue) > 5) {
-    LastValue = CalDirection;
-  }
+  if (CalDirection > 360) 
+    CalDirection = CalDirection - 360; 
 
-  if (IsSampleRequired) {
-    WindSpeed = Rotations * 1,4484096;
-    Rotations = 0;
-  }
+  if (CalDirection < 0) 
+    CalDirection = CalDirection + 360; 
+
+  //Speed
+  Rotations = 0;
+
+  sei();
+  delay(1000);
+  cli();
+
+  WindSpeed = (3.621024/1) * Rotations;
+  
+  Serial.print(CalDirection);
+  Serial.print("\t");
+  Serial.println(WindSpeed);
 }
 
 void isr_rotation() {
@@ -320,19 +384,88 @@ void isr_rotation() {
     ContactBounceTime = millis();
   }
 }
+\end{lstlisting}
+\newpage
 
-void getWindDirection() {
-  VaneValue = analogRead(WindDirectionPin);
-  Direction = map(ValeValue, 0, 1023, 0, 360);
-  CalDirection = Direction + Offset;
+\section{Script readSerial.py}
+\label{app:script4}
+\begin{lstlisting}[basicstyle=\small, language = Python]
+#-*- encoding:utf-8 -*-
+import sys
+import serial
 
-  if (CalDirection > 360) {
-    CalDirection = CalDirection - 360;
-  }
+try:
+    ser = serial.Serial('/dev/cu.usbmodem1411', 9600)
+except:
+    print 'Error de conexion'
+    sys.exit()
 
-  if (CalDirection < 0) {
-    CalDirection = CalDirection + 360;
-  }
-}
+data_file = sys.argv[1]
+f = open(data_file, "w")
+
+while True:
+    try:
+        f.write(ser.readline())
+    except (KeyboardInterrupt):
+        f.close()
+        sys.exit()
+\end{lstlisting}
+\newpage
+
+\section{Script plotData.py}
+\label{app:script5}
+\begin{lstlisting}[basicstyle=\small, language = Python]
+#-*- encoding:utf-8 -*-
+import sys
+import matplotlib.pyplot as plt
+
+def read_data(filename, t):
+    f = open(filename, "r")
+    data = []
+    dataFull = [[], []]
+
+    for line in f.readlines():
+        if t == 'D' or t == 'V':
+            data.append(line.split("\t")[1])
+        else:
+            dataFull[0].append(line.split("\t")[0])
+            dataFull[1].append(line.split("\t")[1])
+
+    if t == 'D' or t == 'V':
+        return data
+    else:
+        return dataFull
+
+def plot(data, t):
+    if t == 'D':
+        plt.plot(data, 'b', linewidth = 2)
+        plt.title(u'Direccion del viento')
+        plt.ylabel(u'Grados')
+    elif t == 'V':
+        plt.plot(data, 'r', linewidth = 2)
+        plt.title(u'Velocidad del viento')
+        plt.ylabel(u'Velocidad [km/h]')
+    else:
+        fig, ax1 = plt.subplots()
+        ax1.plot(data[0], 'b', linewidth = 2, label = u'Velocidad')
+        ax1.set_ylabel(u'Velocidad [km/h]')
+        ax1.legend(loc = 2)
+
+        ax2 = ax1.twinx()
+        ax2.plot(data[1], 'r', linewidth = 2, label = u'Direccion')
+        ax2.set_ylabel(u'Velocidad [km/h]')
+        ax2.set_ylabel(u'Grados')
+        ax2.legend(loc = 0)
+
+        plt.title(u'Direccion y velocidad del viento')
+
+    plt.grid(True)
+    plt.show()
+
+if __name__ == '__main__':
+    filename = sys.argv[1]
+    t = filename[4]
+    data = read_data(filename, t)
+    plot(data, t)
 \end{lstlisting}
 \end{document}

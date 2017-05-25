@@ -17,5 +17,3 @@ while True:
     except (KeyboardInterrupt):
         f.close()
         sys.exit()
-
-#https://playground.arduino.cc/Interfacing/Python

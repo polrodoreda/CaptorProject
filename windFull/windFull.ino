@@ -4,6 +4,11 @@ volatile unsigned long Rotations;
 volatile unsigned long ContactBounceTime;
 
 float WindSpeed;
+int VaneValue;
+int Direction;
+int CalDirection;
+
+#define Offset 0;
 
 void setup() {
   Serial.begin(9600);
@@ -14,6 +19,18 @@ void setup() {
 }
 
 void loop() {
+  //Direction
+  VaneValue = analogRead(A4);
+  Direction = map(VaneValue, 0, 1023, 0, 360);
+  CalDirection = Direction + Offset;
+
+  if (CalDirection > 360) 
+    CalDirection = CalDirection - 360; 
+
+  if (CalDirection < 0) 
+    CalDirection = CalDirection + 360; 
+
+  //Speed
   Rotations = 0;
 
   sei();
@@ -21,18 +38,15 @@ void loop() {
   cli();
 
   WindSpeed = (3.621024/1) * Rotations;
-  Serial.print(Rotations);
+  
+  Serial.print(CalDirection);
   Serial.print("\t");
   Serial.println(WindSpeed);
 }
 
 void isr_rotation() {
-  unsigned long start = micros();
   if ((millis() - ContactBounceTime) > 15) {
     Rotations++;
     ContactBounceTime = millis();
   }
-  unsigned long end = micros();
-  unsigned long delta = end - start;
-  Serial.println(delta);
 }
